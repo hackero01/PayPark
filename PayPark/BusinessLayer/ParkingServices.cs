@@ -26,7 +26,7 @@ namespace PayPark.Classes
             {
                 foreach (ParkSlotModel slot in slots)
                 {
-                    if (!slot.isOcupied)
+                    if (!slot.isOccupied)
                     {
                        
                         slot.addCar(new CarModel(plateNumber));
@@ -46,7 +46,7 @@ namespace PayPark.Classes
         {
             foreach (ParkSlotModel slot in slots)
             {
-                if (slot.isOcupied)
+                if (slot.isOccupied)
                 {
                     if (slot.car.plateNumber == plateNumber)
                         return true;
@@ -62,7 +62,7 @@ namespace PayPark.Classes
             int parkedCar = 0;
             foreach (ParkSlotModel slot in slots)
             {
-                if (slot.isOcupied)
+                if (slot.isOccupied)
                 {
                     CarMessages.DisplayParkedCars(slot.slotId, slot.car);
                     parkedCar++;
@@ -76,13 +76,13 @@ namespace PayPark.Classes
         public void GetFreeParkingLot()
         {
              
-            int numberOfOCupatedSlots = 0;
+            int numberOfOcupatedSlots = 0;
             int numberOfFreeSlots = 0;
             foreach (ParkSlotModel slot in slots)
             {
-                if (slot.isOcupied == false)
+                if (slot.isOccupied == false)
                 {
-                    numberOfOCupatedSlots++;
+                    numberOfOcupatedSlots++;
                     ParkingMessages.DisplayFreeSpaceText(slot.slotId);
                 }
                 else
@@ -90,7 +90,7 @@ namespace PayPark.Classes
                     numberOfFreeSlots++;
                 }
             }
-            ParkingMessages.TotalNumberOfFreeParkingLot(numberOfOCupatedSlots);
+            ParkingMessages.TotalNumberOfFreeParkingLot(numberOfOcupatedSlots);
 
         }
 
@@ -99,7 +99,7 @@ namespace PayPark.Classes
         {
             foreach (ParkSlotModel slot in slots)
             {
-                if (!slot.isOcupied)
+                if (!slot.isOccupied)
                 {
                     ParkingMessages.DisplayFreeSpaceText(slot.slotId);
                 }
@@ -108,8 +108,6 @@ namespace PayPark.Classes
                     CarMessages.DisplayParkedCars(slot.slotId, slot.car);
                 }
             }
-
-
         }
         public void UnParkCar(string plateNumber)
         {           
@@ -122,7 +120,7 @@ namespace PayPark.Classes
                 TollParkCalculator.TollCalculator(plateNumber, slots);
                 int index = slots.FindIndex(a => a.car.plateNumber == plateNumber);
                 slots[index].car = null;
-                slots[index].isOcupied = false;
+                slots[index].isOccupied = false;
             }
         }
         

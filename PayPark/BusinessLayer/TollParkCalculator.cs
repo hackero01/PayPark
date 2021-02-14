@@ -25,7 +25,7 @@ namespace PayPark.BusinessLayer
             TimeSpan totalParkTime = exitTtime - slots[index].car.enterTime;
             slots[index].car.exitTime = DateTime.Now;
             ParkingMessages.ParkingTimeInformation(slots[index].car, totalParkTime);
-            if (totalParkTime.Minutes <= 1)
+            if (totalParkTime.Minutes <= 60)
             {
                 totalPrice = priceForHour;
     

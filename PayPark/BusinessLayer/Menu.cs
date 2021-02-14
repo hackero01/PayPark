@@ -9,7 +9,7 @@ namespace PayPark.BusinessLayer
         {
             Console.Write("\n");
             Console.WriteLine("Choose an option");
-            Console.WriteLine("1. Park car");
+            Console.WriteLine("1. Park a car");
             Console.WriteLine("2. View parked cars");
             Console.WriteLine("3. Unpark car");
             Console.WriteLine("4. View free parking lot");
