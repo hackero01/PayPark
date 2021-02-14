@@ -94,7 +94,6 @@ namespace PayPark.Classes
 
         }
 
-       
         public void ViewParkedCar()
         {
             foreach (ParkSlotModel slot in slots)

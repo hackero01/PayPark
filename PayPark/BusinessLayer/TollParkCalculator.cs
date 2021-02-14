@@ -21,22 +21,34 @@ namespace PayPark.BusinessLayer
             var exitTime = DateTime.Now;
             var exitTtime = new DateTime(exitTime.Year, exitTime.Month, exitTime.Day, exitTime.Hour, exitTime.Minute, 0);
             int totalPrice = 0;
-
             TimeSpan totalParkTime = exitTtime - slots[index].car.enterTime;
             slots[index].car.exitTime = DateTime.Now;
             ParkingMessages.ParkingTimeInformation(slots[index].car, totalParkTime);
-            if (totalParkTime.Minutes <= 60)
+            if (totalParkTime.TotalMinutes <= 60)
             {
                 totalPrice = priceForHour;
-    
+
             }
             else
             {
-                totalPrice = totalPrice + (extraPrice * (totalParkTime.Minutes - 1));
-            }
 
+                TimeSpan time = TimeSpan.FromMinutes(totalParkTime.TotalMinutes);
+                if (time.Minutes != 0)
+                {
+                    totalPrice = priceForHour + (extraPrice * (totalParkTime.Hours));
+                }
+                else
+                {
+                    totalPrice = priceForHour + (extraPrice * (totalParkTime.Hours - 1));
+                }
+
+
+            }
             ParkingMessages.TotalSumOfPay(slots[index].car, totalPrice);
             return totalPrice;
         }
+       
+       
     }
+    
 }
