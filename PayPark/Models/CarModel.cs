@@ -3,7 +3,7 @@ using System;
 
 namespace PayPark.Models
 {
-    class CarModel
+    public class CarModel
     {
 
         public string plateNumber { get; set; }

@@ -51,6 +51,7 @@
   </PropertyGroup>
   <ItemGroup>
     <Reference Include="System" />
+    <Reference Include="System.Configuration" />
     <Reference Include="System.Core" />
     <Reference Include="System.Xml.Linq" />
     <Reference Include="System.Data.DataSetExtensions" />
@@ -60,9 +61,13 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
-    <Compile Include="BusinessLayer\DisplayMessages.cs" />
+    <Compile Include="BusinessLayer\Menu.cs" />
+    <Compile Include="BusinessLayer\CarSlotFactory.cs" />
     <Compile Include="BusinessLayer\IParkingServices.cs" />
     <Compile Include="BusinessLayer\ParkingServices.cs" />
+    <Compile Include="BusinessLayer\TollParkCalculator.cs" />
+    <Compile Include="Messages\CarMessages.cs" />
+    <Compile Include="Messages\ParkingMessages.cs" />
     <Compile Include="Models\CarModel.cs" />
     <Compile Include="Models\ParkSlotModel.cs" />
     <Compile Include="Program.cs" />

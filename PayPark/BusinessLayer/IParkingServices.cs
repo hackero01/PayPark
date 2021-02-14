@@ -8,11 +8,11 @@ namespace PayPark.BusinessLayer
 {
    public interface IParkingServices
     {
-        public void AddCar();
+        public void AddCar(string plateNumber);
         public void ViewParkedCar();
-        public void OutCarFromParking();
+        public void UnParkCar(string plateNumber);
         public void GetFreeParkingLot();
         public void DisplayParkedCars();
-        public void InitializeParkingSlot();
+       
     }
 }

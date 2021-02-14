@@ -1,170 +1,132 @@
 ﻿using PayPark.BusinessLayer;
+using PayPark.Messages;
 using PayPark.Models;
 using System;
 using System.Collections.Generic;
-using System.Linq;
+using System.Configuration;
+
 
 namespace PayPark.Classes
 {
-    class ParkingServices:IParkingServices
+    public class ParkingServices : IParkingServices
     {
+        static int parkingLots = Int32.Parse(ConfigurationManager.AppSettings["ParkingLots"]);
 
-        private static List<ParkSlotModel> slots = new List<ParkSlotModel>();
-        private static int noParkingSlotId = -1;
-        private static int maxSlotPark = 10;
+        private static List<ParkSlotModel> slots = CarSlotFactory.getSlots(parkingLots);
 
-       
-        public  void InitializeParkingSlot()
+        int parkedCar = 0;
+        public void AddCar(string plateNumber)
         {
-            for (int i = 0; i < maxSlotPark; i++)
+            
+            if (CheckIfCarExist(plateNumber))
             {
-                string initializedDate = "11/12/2020";
-                DateTime standardDate = DateTime.Parse(initializedDate);
-                slots.Add(new ParkSlotModel(false));
-            }
-
-        }
-        public  void AddCar()
-        {
-            DisplayMessages.EnterNumberOfVehicle();
-            string plateNumber = Console.ReadLine();
-
-            if (GetFirstFreeParkSlot() == noParkingSlotId)
-            {
-                Console.Write("We dont have any free park spaces");
+                CarMessages.CarAlreadyExistMessage();
             }
             else
             {
-                CarModel car = new CarModel(plateNumber);
-                slots[GetFirstFreeParkSlot()] = new ParkSlotModel(true, car);
-
-                
-
-
-
+                foreach (ParkSlotModel slot in slots)
+                {
+                    if (!slot.isOcupied)
+                    {
+                       
+                        slot.addCar(new CarModel(plateNumber));
+                        CarMessages.CarParkedMessage();
+                        parkedCar++;
+                        return;
+                    }
+                }
+                if (parkedCar == parkingLots)
+                {
+                    CarMessages.WeDontHaveAnyFreeSpaces();
+                }
             }
 
         }
-        public  void DisplayParkedCars()
+        public bool CheckIfCarExist(string plateNumber)
         {
-            int freeSlot = GetNumbersOfFreeSpaces();
-            int parkedCar = 0;
-            DisplayMessages.TotalNumberOfFreeParkingLot(freeSlot);
-            
-            for (int i = 0; i < slots.Count(); i++)
+            foreach (ParkSlotModel slot in slots)
             {
-
-                if (slots[i].isOcupied == true)
+                if (slot.isOcupied)
                 {
-                    
-                    DisplayMessages.DisplayParkedCars(i, slots[i].car);
+                    if (slot.car.plateNumber == plateNumber)
+                        return true;
+
+                }
+            }
+            return false;
+        }
+
+        public void DisplayParkedCars()
+        {
+
+            int parkedCar = 0;
+            foreach (ParkSlotModel slot in slots)
+            {
+                if (slot.isOcupied)
+                {
+                    CarMessages.DisplayParkedCars(slot.slotId, slot.car);
                     parkedCar++;
                 }
-
-
             }
             if (parkedCar == 0)
             {
-                DisplayMessages.ParkEmpty();
+                ParkingMessages.ParkEmpty();
             }
         }
-        public  void GetFreeParkingLot()
+        public void GetFreeParkingLot()
         {
-
-
-            int freeSlot = GetNumbersOfFreeSpaces();
-            DisplayMessages.TotalNumberOfFreeParkingLot(freeSlot);
-            for (int i = 0; i < slots.Count(); i++)
+             
+            int numberOfOCupatedSlots = 0;
+            int numberOfFreeSlots = 0;
+            foreach (ParkSlotModel slot in slots)
             {
-
-                if (slots[i].isOcupied == false)
+                if (slot.isOcupied == false)
                 {
-                    DisplayMessages.DisplayFreeSpaceText(i);
-                }
-
-            }
-        }
-        public  int GetNumbersOfFreeSpaces()
-        {
-            int freeSlot = 0;
-            for (int i = 0; i < slots.Count(); i++)
-            {
-                if (!slots[i].isOcupied)
-                {
-                    freeSlot++;
-                }
-            } 
-            return freeSlot;
-        }
-        public  void ViewParkedCar()
-        {
-
-            int freeSlot = GetNumbersOfFreeSpaces();
-
-            DisplayMessages.TotalNumberOfFreeParkingLot(freeSlot);
-            for (int i = 0; i < slots.Count(); i++)
-            {
-
-                if (slots[i].isOcupied == false)
-                {
-                    DisplayMessages.DisplayFreeSpaceText(i);
+                    numberOfOCupatedSlots++;
+                    ParkingMessages.DisplayFreeSpaceText(slot.slotId);
                 }
                 else
                 {
-                    DisplayMessages.DisplayParkedCars(i, slots[i].car);
+                    numberOfFreeSlots++;
+                }
+            }
+            ParkingMessages.TotalNumberOfFreeParkingLot(numberOfOCupatedSlots);
+
+        }
+
+       
+        public void ViewParkedCar()
+        {
+            foreach (ParkSlotModel slot in slots)
+            {
+                if (!slot.isOcupied)
+                {
+                    ParkingMessages.DisplayFreeSpaceText(slot.slotId);
+                }
+                else
+                {
+                    CarMessages.DisplayParkedCars(slot.slotId, slot.car);
                 }
             }
 
-        }
-        public  void OutCarFromParking()
-        {
-
-            DisplayMessages.EnterNumberOfVehicle();
-            string plateNumber = Console.ReadLine();
-            TaxCalculator(plateNumber);
-            int index = slots.FindIndex(a => a.car.plateNumber == plateNumber);
-            slots[index].car.plateNumber = "";
-            slots[index].isOcupied = false;
-          
-
-
-
 
         }
-        public  int TaxCalculator(string plateNumber)
-        {
-            int index = slots.FindIndex(a => a.car.plateNumber == plateNumber);
-            var exitTime = DateTime.Now;
-            var exitTtime = new DateTime(exitTime.Year, exitTime.Month, exitTime.Day, exitTime.Hour, exitTime.Minute, 0);
-            int pretFinal = 10, extraPrice = 0, totalPrice = 0;
-            TimeSpan totalParkTime = exitTtime - slots[index].car.enterTime;
-            slots[index].car.exitTime = DateTime.Now;
-            DisplayMessages.ParkingTimeInformation(slots[index].car, totalParkTime);
-            if (totalParkTime.Minutes <= 1)
+        public void UnParkCar(string plateNumber)
+        {           
+            if (!CheckIfCarExist(plateNumber))
             {
-                pretFinal = 10;
-                extraPrice = 0;
-
+                CarMessages.CarDoesNotExistMessage();
             }
             else
             {
-                extraPrice = 5 * (totalParkTime.Minutes - 1);
+                TollParkCalculator.TollCalculator(plateNumber, slots);
+                int index = slots.FindIndex(a => a.car.plateNumber == plateNumber);
+                slots[index].car = null;
+                slots[index].isOcupied = false;
             }
-            totalPrice = pretFinal + extraPrice;
-            DisplayMessages.TotalSumOfPay(slots[index].car, totalPrice);
-            return totalPrice;
         }
-        private static int GetFirstFreeParkSlot()
-        {
-            for (int i = 0; i < slots.Count(); i++)
-            {
-                if (!slots[i].isOcupied)
-                {
-                    return i;
-                }
+        
+      
 
-            }
-            return noParkingSlotId;
-        }
     }
 }

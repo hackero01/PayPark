@@ -3,22 +3,25 @@
 
 namespace PayPark.Models
 {
-    class ParkSlotModel
+    public class ParkSlotModel
     {
         
         public bool isOcupied { get; set; }
-    
+        public int slotId { get; set; }
         public CarModel car { get; set; }
-        public ParkSlotModel(bool isOcupied,CarModel car)
+        public int ocupiedPlaces { get; set; }
+
+        public void addCar(CarModel car)
         {
-            
-            this.isOcupied = isOcupied;
             this.car = car;
-            
+            this.isOcupied = true;
+            ocupiedPlaces++;
         }
-        public ParkSlotModel(bool isOcupied)
+       
+        public ParkSlotModel(int slotId)
         {
-            this.isOcupied = isOcupied;
+            this.isOcupied = false;
+            this.slotId = slotId;
         }
         
     }
