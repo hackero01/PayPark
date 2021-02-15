@@ -17,6 +17,7 @@ namespace PayPark.Messages
             Console.Write("The vehicle with number plate: " + car.plateNumber + "\n");
             Console.Write("Parked at : " + car.enterTime + "\n");
             Console.Write("Exit at: " + car.exitTime + "\n");
+            Console.WriteLine("Parked Time: {0:dd\\.hh\\:mm\\:ss}", parkTime);
             Console.Write("------------------------------------------------------ \n");
         }
         public static void TotalSumOfPay(CarModel car, int totalPrice)
